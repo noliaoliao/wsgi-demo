@@ -1,0 +1,13 @@
+#!/usr/bin/env python
+
+"""
+stack start script.
+"""
+
+from paste import httpserver
+from paste.deploy import loadapp
+#from mystack.nova import api
+import mystack.nova
+if __name__ == "__main__":
+    wsgi_app = loadapp('config:api-paste.ini', relative_to='.')
+    httpserver.serve(wsgi_app,host='10.166.224.12', port='6666')
