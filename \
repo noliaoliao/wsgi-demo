@@ -19,13 +19,16 @@ class APIRouter(object):
     def _setup_routes(self):
         mapper = Mapper()
         mapper.connect(None,'/{opname}/{action}',conditions={'method':['GET']})
-        mapper.redirect('','/servers/detail')
+        mapper.redirect('/','/servers/detail')
         self.router = middleware.RoutesMiddleware(self.dispatch, mapper)
+        print 'routes'
     
     @wsgify
     #def dispatch(self, environ, start_response):
     def dispatch(self, req):
-        print req.environ['wsgiorg.routing_args'][1]
+        print req.environ
+        #print 'head', req.headers
+        #print 'body', req.body
         return 'OK OK OK'
 
     @classmethod
