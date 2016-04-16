@@ -24,6 +24,9 @@ class Controller(object):
         print '[DEBUG] call controller.sayhello'
         return "hello~\n"
     
+    #NOTE(lyh): must add the __call__ function
+    #otherwise type(controller) is unicode
+    #and raise AttributeError 
     def __call__(self):
         print '[DEBUG] call controller.__call__'
 
