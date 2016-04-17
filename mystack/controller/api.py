@@ -14,6 +14,10 @@ class Auth(object):
             #return ['You are forbidden to view this resource']
             return exc.HTTPForbidden()
         return self.app(environ, start_response)
+   
+    @classmethod
+    def factory(cls, app, global_confgi):
+        return cls(app)
 
 class IPAddr(object):
     def __init__(self, app):
@@ -23,12 +27,17 @@ class IPAddr(object):
         if environ.get('REMOTE_ADDR').startswith('10.166.224') == False:
             return exc.HTTPForbidden()
         return self.app(environ, start_response)            
-              
+    
+    @classmethod
+    def factory(cls, app, global_config):
+        print '[DEBUG]', app
+        print '[DEBUG]', global_config 
+        return cls(app)          
         
-def auth_filter(app,global_config):
-    return Auth(app)
+#def auth_filter(app,global_config):
+#    return Auth(app)
 
-def ipaddr_filter(app, global_config):
-    print '[DEBUG]', app
-    print '[DEBUG]', global_config 
-    return IPAddr(app)
+#def ipaddr_filter(app, global_config):
+#    print '[DEBUG]', app
+#    print '[DEBUG]', global_config 
+#    return IPAddr(app)
