@@ -6,19 +6,47 @@ from webob import Response
 from webob import Request
 from webob.dec import *
 from routes import Mapper, middleware
+from client import MySQLClient
+import random
+import string
+import uuid
+import md5
+import json
 
 # nova controller class
 class Controller(object):
     def __init__(self):
+        self.client = MySQLClient(host='localhost', db='mystack', user='root', passwd='liao123')
         print '[DEBUG] Controller class init.'
     
     def detail(self):
         print '[DEBUG] call controller.detail.'
-        return "{'detail':{'name':'host-01','ID':'001'}}\n"
+        #return "{'detail':{'name':'host-01','ID':'001'}}\n"
+        sql = "select uid, username,userpasswd from user"
+        self.client.execute(sql)
+        details = self.client.fetchall()
+        #for eachitem in details:
+        #    print eachitem
+
+        return json.dumps(details) 
 
     def create(self):
         print '[DEBUG] call controller.create'
-        return "call create\n"
+        id = uuid.uuid4().hex
+        username = ''.join(random.sample(string.ascii_letters,8))
+        passwd = ''.join(random.sample(string.ascii_letters,8))
+        encode = md5.new()
+        encode.update(passwd)
+        userpasswd = encode.hexdigest()
+
+        sql = "insert into user values(\""+id+"\",\""+username+"\",\""+userpasswd+"\")"
+        self.client.execute(sql)
+
+        resp = {}
+        resp["ID"] = id
+        resp["name"] = username
+        resp["passwd"] = userpasswd
+        return json.dumps(resp)
 
     def sayhello(self):
         print '[DEBUG] call controller.sayhello'
@@ -73,4 +101,3 @@ class APIRouter(object):
 #def nova_factory(global_config, **local_config):
 #    print '[DEBUG] call nova_factory'
 #    return novaController()
-
